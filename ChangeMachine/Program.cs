@@ -4,23 +4,35 @@
     {
         static void Main(string[] args)
         {
+            const double STAMP_COST = 0.60;
             var coinsInMachine = new Dictionary<string, int>()
             {
                 {"Dollars", 100},
-                {"Fiddy", 200},
+                {"Fiddies", 200},
                 {"Quarters", 400},
                 {"Dimes", 1000},
-                {"Nickels", 2000}
+                {"Nickels", 2000},
+                {"Pennies", 10000 }
             };
             int dollarCoins = 0;
             int fiddyCentCoins = 0;
             int quarters = 0;
             int dimes = 0;
             int nickels = 0;
+            int pennies = 0;
 
-            Console.WriteLine("Stamps are currently $0.60 each. Please enter how many you would like: ");
+            double dollarDenom = 1;
+            double fiddyDenom = 0.5;
+            double quarterDenom = 0.25;
+            double dimeDenom = 0.1;
+            double nickelDenom = 0.05;
+            double pennyDenom = 0.01;
+
+
+
+            Console.WriteLine($"Stamps are currently ${STAMP_COST.ToString("0.00")} each. Please enter how many you would like: ");
             int stamps = Convert.ToInt32(Console.ReadLine());
-            var totalCost = stamps * 0.60;
+            var totalCost = stamps * STAMP_COST;
             Console.WriteLine($"The total cost for your stamps will be ${totalCost.ToString("0.00")}");
 
             Console.WriteLine("Enter the amount of money you're entering into the machine: ");
@@ -29,55 +41,29 @@
             double totalReturn = moneyEntered - totalCost;
             Console.WriteLine($"Your change is ${totalReturn.ToString("0.00")}. Please wait, calculating coins to return...");
 
-            while (totalReturn / 1 >= 1 && totalReturn > 0)
-            {
-                dollarCoins++;
-                coinsInMachine["Dollars"]--;
-                totalReturn--;
-                if (coinsInMachine["Dollars"] < 1)
-                {
-                    break;
-                }
-            }
-            Console.WriteLine($"Dollar coins returned: {dollarCoins}");
+            CoinReturn(coinsInMachine, dollarCoins, ref totalReturn, dollarDenom, "Dollars");
+            CoinReturn(coinsInMachine, fiddyCentCoins, ref totalReturn, fiddyDenom, "Fiddies");
+            CoinReturn(coinsInMachine, quarters, ref totalReturn, quarterDenom, "Quarters");
+            CoinReturn(coinsInMachine, dimes, ref totalReturn, dimeDenom, "Dimes");
+            CoinReturn(coinsInMachine, nickels, ref totalReturn, nickelDenom, "Nickels");
+            CoinReturn(coinsInMachine, pennies, ref totalReturn, pennyDenom, "Pennies");
 
-            while (totalReturn >= 0.5 && totalReturn > 0)
-            {
-                fiddyCentCoins++;
-                coinsInMachine["Fiddy"]--;
-                totalReturn = totalReturn - 0.50;
-                if (coinsInMachine["Fiddy"] < 1)
-                {
-                    break;
-                }
-            }
-            Console.WriteLine($"Fiddy cent coins returned: {fiddyCentCoins}");
 
-            while (totalReturn >= 0.25 && totalReturn > 0)
-            {
-                quarters++;
-                coinsInMachine["Quarters"]--;
-                totalReturn = totalReturn - 0.25;
-            }
-            Console.WriteLine($"Quarters returned: {quarters}");
-
-            while (totalReturn >= 0.1 && totalReturn > 0)
-            {
-                dimes++;
-                coinsInMachine["Dimes"]--;
-                totalReturn = totalReturn - 0.10;
-            }
-            Console.WriteLine($"Dimes returned: {dimes}");
-
-            while (totalReturn >= 0.05 && totalReturn > 0)
-            {
-                nickels++;
-                coinsInMachine["Nickels"]--;
-                totalReturn = totalReturn - 0.05;
-            }
-            Console.WriteLine($"Nickels returned: {nickels}");
         }
 
-
+        private static void CoinReturn(Dictionary<string, int> coinsInMachine, int coins, ref double totalReturn, double denomination, string coinType)
+        {
+            while (totalReturn >= denomination && totalReturn > 0)
+            {
+                coins++;
+                coinsInMachine[$"{coinType}"]--;
+                totalReturn = totalReturn - denomination;
+                if (coinsInMachine[$"{coinType}"] < 1)
+                {
+                    break;
+                }
+            }
+            Console.WriteLine($"{coinType} returned: {coins}");
+        }
     }
 }
