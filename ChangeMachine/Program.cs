@@ -1,4 +1,6 @@
-﻿namespace ChangeMachine
+﻿using System.Reflection.Metadata;
+
+namespace ChangeMachine
 {
     public class Program
     {
@@ -28,27 +30,36 @@
             double nickelDenom = 0.05;
             double pennyDenom = 0.01;
 
+            bool anotherCustomer = true;
 
+            while (anotherCustomer)
+            {
+                Console.WriteLine($"Stamps are currently ${STAMP_COST.ToString("0.00")} each. Please enter how many you would like: ");
+                int stamps = Convert.ToInt32(Console.ReadLine());
+                var totalCost = stamps * STAMP_COST;
+                Console.WriteLine($"The total cost for your stamps will be ${totalCost.ToString("0.00")}");
 
-            Console.WriteLine($"Stamps are currently ${STAMP_COST.ToString("0.00")} each. Please enter how many you would like: ");
-            int stamps = Convert.ToInt32(Console.ReadLine());
-            var totalCost = stamps * STAMP_COST;
-            Console.WriteLine($"The total cost for your stamps will be ${totalCost.ToString("0.00")}");
+                Console.WriteLine("Enter the amount of money you're entering into the machine: ");
+                double moneyEntered = Convert.ToDouble(Console.ReadLine());
 
-            Console.WriteLine("Enter the amount of money you're entering into the machine: ");
-            double moneyEntered = Convert.ToDouble(Console.ReadLine());
+                double totalReturn = moneyEntered - totalCost;
+                Console.WriteLine($"Your change is ${totalReturn.ToString("0.00")}. Please wait, calculating coins to return...");
 
-            double totalReturn = moneyEntered - totalCost;
-            Console.WriteLine($"Your change is ${totalReturn.ToString("0.00")}. Please wait, calculating coins to return...");
+                CoinReturn(coinsInMachine, dollarCoins, ref totalReturn, dollarDenom, "Dollars");
+                CoinReturn(coinsInMachine, fiddyCentCoins, ref totalReturn, fiddyDenom, "Fiddies");
+                CoinReturn(coinsInMachine, quarters, ref totalReturn, quarterDenom, "Quarters");
+                CoinReturn(coinsInMachine, dimes, ref totalReturn, dimeDenom, "Dimes");
+                CoinReturn(coinsInMachine, nickels, ref totalReturn, nickelDenom, "Nickels");
+                CoinReturn(coinsInMachine, pennies, ref totalReturn, pennyDenom, "Pennies");
 
-            CoinReturn(coinsInMachine, dollarCoins, ref totalReturn, dollarDenom, "Dollars");
-            CoinReturn(coinsInMachine, fiddyCentCoins, ref totalReturn, fiddyDenom, "Fiddies");
-            CoinReturn(coinsInMachine, quarters, ref totalReturn, quarterDenom, "Quarters");
-            CoinReturn(coinsInMachine, dimes, ref totalReturn, dimeDenom, "Dimes");
-            CoinReturn(coinsInMachine, nickels, ref totalReturn, nickelDenom, "Nickels");
-            CoinReturn(coinsInMachine, pennies, ref totalReturn, pennyDenom, "Pennies");
+                Console.WriteLine("Would you like to make another transaction? [y/n]");
+                var continueInput = Console.ReadLine();
 
-
+                if (continueInput is "n")
+                {
+                    anotherCustomer = false;
+                }
+            }
         }
 
         private static void CoinReturn(Dictionary<string, int> coinsInMachine, int coins, ref double totalReturn, double denomination, string coinType)
